@@ -6,4 +6,6 @@
     <color name="backgroundText">#84c0c5</color>
     <color name="colorText">#ffffff</color>
     <color name="white">#ffffff</color>
+    <color name="colorItem">#FFC31E</color>
+    <color name="colorItemDark">#AA6404</color>
 </resources>

@@ -15,31 +15,31 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        Log.i("MainActivity","onStart");
+        Log.i("MainActivity", "onStart");
     }
 
     @Override
     protected void onStop() {
         super.onStop();
-        Log.i("MainActivity","onStop");
+        Log.i("MainActivity", "onStop");
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        Log.i("MainActivity","onPause");
+        Log.i("MainActivity", "onPause");
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        Log.i("MainActivity","onResume");
+        Log.i("MainActivity", "onResume");
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        Log.i("MainActivity","onDestroy");
+        Log.i("MainActivity", "onDestroy");
     }
 
 }
