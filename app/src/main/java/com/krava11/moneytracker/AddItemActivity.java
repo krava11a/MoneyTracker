@@ -13,10 +13,9 @@ public class AddItemActivity extends AppCompatActivity {
 
     private static final String TAG = "AddItemActivity";
 
-    private EditText name ;
+    private EditText name;
     private EditText price;
     private Button addBtn;
-
 
 
     @Override
@@ -42,9 +41,9 @@ public class AddItemActivity extends AppCompatActivity {
             @SuppressLint("SetTextI18n")
             @Override
             public void afterTextChanged(Editable s) {
-                if ((!TextUtils.isEmpty(name.getText()))&&(!TextUtils.isEmpty(price.getText()))){
+                if ((!TextUtils.isEmpty(name.getText())) && (!TextUtils.isEmpty(price.getText()))) {
                     addBtn.setEnabled(true);
-                }else{
+                } else {
                     addBtn.setEnabled(false);
                 }
             }
