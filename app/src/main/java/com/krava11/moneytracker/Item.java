@@ -1,32 +1,22 @@
 package com.krava11.moneytracker;
 
+import com.google.gson.annotations.SerializedName;
+
 public class Item {
 
-    private final String title;
-    private final int price;
-    private String comment;
+    public static final String TYPE_UNKNOWN = "unknown";
+    public static final String TYPE_INCOMES = "incomes";
+    public static final String TYPE_EXPENSES = "expenses";
 
-    public Item(String title, int price) {
-        this.title = title;
+    public int id;
+    @SerializedName("name")
+    public String title;
+    public int price;
+    public String type;
+
+    public Item(String name, int price, String type) {
+        this.title = name;
         this.price = price;
-
+        this.type = type;
     }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public int getPrice() {
-        return price;
-    }
-
-    public String getComment() {
-        return comment;
-    }
-
-    public void setComment(String comment) {
-        this.comment = comment;
-    }
-
-
 }

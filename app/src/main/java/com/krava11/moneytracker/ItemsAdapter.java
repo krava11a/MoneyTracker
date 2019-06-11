@@ -14,8 +14,14 @@ class ItemsAdapter extends RecyclerView.Adapter<ItemsAdapter.ItemViewHolder> {
 
     private List<Item> data = new ArrayList<>();
 
-    public ItemsAdapter() {
-        createData();
+//    public ItemsAdapter() {
+//        createData();
+//    }
+
+    public void setData(List<Item> data){
+        this.data = data;
+        notifyDataSetChanged();
+
     }
 
     @NonNull
@@ -31,7 +37,7 @@ class ItemsAdapter extends RecyclerView.Adapter<ItemsAdapter.ItemViewHolder> {
     }
 
     @Override
-    public void onBindViewHolder(ItemsAdapter.ItemViewHolder viewHolder, int i) {
+    public void onBindViewHolder(@NonNull ItemsAdapter.ItemViewHolder viewHolder, int i) {
         Item item = data.get(i);
         viewHolder.applyData(item);
     }
@@ -41,30 +47,30 @@ class ItemsAdapter extends RecyclerView.Adapter<ItemsAdapter.ItemViewHolder> {
         return data.size();
     }
 
-    private void createData() {
-        data.add(new Item("Молоко", 100));
-        data.add(new Item("Жизнь", 200));
-        data.add(new Item("Хлеб", 30));
-        data.add(new Item("Курсы", 30000));
-        data.add(new Item("Тот самый ужин который я оплатил за всех картой", 4600));
-        data.add(new Item("", 0));
-        data.add(new Item("Ужин с любимой женой", 987));
-        data.add(new Item("ракета", 90));
-        data.add(new Item("Тысячелетний сокол", 100000000));
-        data.add(new Item("Macbook Pro", 240000));
-        data.add(new Item("Машина", 620000));
-        data.add(new Item("Молоко", 100));
-        data.add(new Item("Жизнь", 200));
-        data.add(new Item("Хлеб", 30));
-        data.add(new Item("Курсы", 30000));
-        data.add(new Item("Тот самый ужин который я оплатил за всех картой", 4600));
-        data.add(new Item("", 0));
-        data.add(new Item("Ужин с любимой женой", 987));
-        data.add(new Item("ракета", 90));
-        data.add(new Item("Тысячелетний сокол", 100000000));
-        data.add(new Item("Macbook Pro", 240000));
-        data.add(new Item("Машина", 620000));
-    }
+//    private void createData() {
+//        data.add(new Item("Молоко", 100));
+//        data.add(new Item("Жизнь", 200));
+//        data.add(new Item("Хлеб", 30));
+//        data.add(new Item("Курсы", 30000));
+//        data.add(new Item("Тот самый ужин который я оплатил за всех картой", 4600));
+//        data.add(new Item("", 0));
+//        data.add(new Item("Ужин с любимой женой", 987));
+//        data.add(new Item("ракета", 90));
+//        data.add(new Item("Тысячелетний сокол", 100000000));
+//        data.add(new Item("Macbook Pro", 240000));
+//        data.add(new Item("Машина", 620000));
+//        data.add(new Item("Молоко", 100));
+//        data.add(new Item("Жизнь", 200));
+//        data.add(new Item("Хлеб", 30));
+//        data.add(new Item("Курсы", 30000));
+//        data.add(new Item("Тот самый ужин который я оплатил за всех картой", 4600));
+//        data.add(new Item("", 0));
+//        data.add(new Item("Ужин с любимой женой", 987));
+//        data.add(new Item("ракета", 90));
+//        data.add(new Item("Тысячелетний сокол", 100000000));
+//        data.add(new Item("Macbook Pro", 240000));
+//        data.add(new Item("Машина", 620000));
+//    }
 
     static class ItemViewHolder extends RecyclerView.ViewHolder {
         private final TextView title;
@@ -77,8 +83,8 @@ class ItemsAdapter extends RecyclerView.Adapter<ItemsAdapter.ItemViewHolder> {
         }
 
         public void applyData(Item item) {
-            title.setText(item.getTitle());
-            price.setText(String.format("%s\u20BD",String.valueOf(item.getPrice())));
+            title.setText(item.title);
+            price.setText(String.format("%s\u20BD",String.valueOf(item.price)));
         }
     }
 
