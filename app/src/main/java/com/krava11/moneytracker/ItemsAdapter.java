@@ -47,6 +47,11 @@ class ItemsAdapter extends RecyclerView.Adapter<ItemsAdapter.ItemViewHolder> {
         return data.size();
     }
 
+    public void addItem(Item item) {
+        data.add(0,item);
+        notifyItemInserted(0);
+    }
+
 //    private void createData() {
 //        data.add(new Item("Молоко", 100));
 //        data.add(new Item("Жизнь", 200));
@@ -84,7 +89,7 @@ class ItemsAdapter extends RecyclerView.Adapter<ItemsAdapter.ItemViewHolder> {
 
         public void applyData(Item item) {
             title.setText(item.title);
-            price.setText(String.format("%s\u20BD",String.valueOf(item.price)));
+            price.setText(String.format("%s\u20BD",item.price));
         }
     }
 
