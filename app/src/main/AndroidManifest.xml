@@ -25,7 +25,8 @@
 
         <activity
             android:name=".AddItemActivity"
-            android:label="@string/add_item_title">
+            android:label="@string/add_item_title"
+            >
 
         </activity>
 

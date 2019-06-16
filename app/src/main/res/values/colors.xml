@@ -8,4 +8,7 @@
     <color name="white">#ffffff</color>
     <color name="colorItem">#FFC31E</color>
     <color name="colorItemDark">#AA6404</color>
+    <color name="colorItemSelected">#663B01</color>
+
+    <color name="colorShadow">#38383838</color>
 </resources>
