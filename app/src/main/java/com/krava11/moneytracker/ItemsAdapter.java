@@ -2,6 +2,7 @@ package com.krava11.moneytracker;
 
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,10 +14,15 @@ import java.util.List;
 class ItemsAdapter extends RecyclerView.Adapter<ItemsAdapter.ItemViewHolder> {
 
     private List<Item> data = new ArrayList<>();
+    private ItemsAdapterListener listener = null;
 
 //    public ItemsAdapter() {
 //        createData();
 //    }
+
+    public void setListener(ItemsAdapterListener listener){
+        this.listener = listener;
+    }
 
     public void setData(List<Item> data){
         this.data = data;
@@ -37,9 +43,9 @@ class ItemsAdapter extends RecyclerView.Adapter<ItemsAdapter.ItemViewHolder> {
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ItemsAdapter.ItemViewHolder viewHolder, int i) {
-        Item item = data.get(i);
-        viewHolder.applyData(item);
+    public void onBindViewHolder(@NonNull ItemsAdapter.ItemViewHolder viewHolder, int position) {
+        Item item = data.get(position);
+        viewHolder.applyData(item, position, listener, selections.get(position,false));
     }
 
     @Override
@@ -52,30 +58,42 @@ class ItemsAdapter extends RecyclerView.Adapter<ItemsAdapter.ItemViewHolder> {
         notifyItemInserted(0);
     }
 
-//    private void createData() {
-//        data.add(new Item("Молоко", 100));
-//        data.add(new Item("Жизнь", 200));
-//        data.add(new Item("Хлеб", 30));
-//        data.add(new Item("Курсы", 30000));
-//        data.add(new Item("Тот самый ужин который я оплатил за всех картой", 4600));
-//        data.add(new Item("", 0));
-//        data.add(new Item("Ужин с любимой женой", 987));
-//        data.add(new Item("ракета", 90));
-//        data.add(new Item("Тысячелетний сокол", 100000000));
-//        data.add(new Item("Macbook Pro", 240000));
-//        data.add(new Item("Машина", 620000));
-//        data.add(new Item("Молоко", 100));
-//        data.add(new Item("Жизнь", 200));
-//        data.add(new Item("Хлеб", 30));
-//        data.add(new Item("Курсы", 30000));
-//        data.add(new Item("Тот самый ужин который я оплатил за всех картой", 4600));
-//        data.add(new Item("", 0));
-//        data.add(new Item("Ужин с любимой женой", 987));
-//        data.add(new Item("ракета", 90));
-//        data.add(new Item("Тысячелетний сокол", 100000000));
-//        data.add(new Item("Macbook Pro", 240000));
-//        data.add(new Item("Машина", 620000));
-//    }
+    private SparseBooleanArray selections = new SparseBooleanArray();
+
+    public void toggleSelection(int position) {
+        if (selections.get(position,false)){
+            selections.delete(position);
+        }else{
+            selections.put(position,true);
+        }
+
+        notifyItemChanged(position);
+    }
+
+    public void clearSelection(){
+        selections.clear();
+        notifyDataSetChanged();
+    }
+
+    public int getSelectionItemsCount(){
+        return selections.size();
+    }
+
+    public List<Integer> getSelectedItems(){
+        List<Integer> items = new ArrayList<>(selections.size());
+        for (int i = 0; i < selections.size(); i++) {
+            items.add(selections.keyAt(i));
+        }
+        return items;
+
+    }
+
+    public Item removeItem(int position){
+        Item item = data.remove(position);
+        notifyItemRemoved(position);
+        return item;
+    }
+
 
     static class ItemViewHolder extends RecyclerView.ViewHolder {
         private final TextView title;
@@ -87,9 +105,31 @@ class ItemsAdapter extends RecyclerView.Adapter<ItemsAdapter.ItemViewHolder> {
             price = itemView.findViewById(R.id.price);
         }
 
-        public void applyData(Item item) {
+        public void applyData(final Item item, final int position, final ItemsAdapterListener listener, boolean selected) {
             title.setText(item.title);
             price.setText(String.format("%s\u20BD",item.price));
+
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (listener != null){
+                        listener.onItemClick(item,position);
+                    }
+
+                }
+            });
+
+            itemView.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    if (listener != null){
+                        listener.onItemLongClick(item,position);
+                    }
+                    return true;
+                }
+            });
+
+            itemView.setActivated(selected);
         }
     }
 

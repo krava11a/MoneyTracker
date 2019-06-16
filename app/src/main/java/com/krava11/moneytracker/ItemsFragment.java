@@ -6,13 +6,17 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.view.ActionMode;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -26,7 +30,7 @@ public class ItemsFragment extends Fragment {
 
     private static final String TAG = "ItemsFragment";
 
-    public static final int ADD_ITEM_REQUEST_CODE=777;
+    public static final int ADD_ITEM_REQUEST_CODE = 777;
 
     public static final String TYPE_KEY = "key";
     private Api api;
@@ -43,13 +47,13 @@ public class ItemsFragment extends Fragment {
     private String type;
     private RecyclerView recyclerView;
     private ItemsAdapter adapter;
-    private FloatingActionButton fab;
     private SwipeRefreshLayout swipeRefreshLayout;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         adapter = new ItemsAdapter();
+        adapter.setListener(new AdapterListener());
 
         Bundle bundle = getArguments();
         type = bundle.getString(TYPE_KEY, Item.TYPE_UNKNOWN);
@@ -76,10 +80,8 @@ public class ItemsFragment extends Fragment {
         recyclerView.addItemDecoration(new SpacesItemDecorator(10, 10, 5, 5));
         recyclerView.setAdapter(adapter);
 
-
-
         swipeRefreshLayout = view.findViewById(R.id.refresh);
-        swipeRefreshLayout.setColorSchemeColors(Color.BLUE,Color.CYAN,Color.GREEN);
+        swipeRefreshLayout.setColorSchemeColors(Color.BLUE, Color.CYAN, Color.GREEN);
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -111,9 +113,9 @@ public class ItemsFragment extends Fragment {
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == ADD_ITEM_REQUEST_CODE && resultCode == Activity.RESULT_OK){
+        if (requestCode == ADD_ITEM_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
             Item item = data.getParcelableExtra("item");
-            if (item.type.equals(type)){
+            if (item.type.equals(type)) {
                 adapter.addItem(item);
                 recyclerView.scrollToPosition(0);
             }
@@ -122,4 +124,94 @@ public class ItemsFragment extends Fragment {
 
         super.onActivityResult(requestCode, resultCode, data);
     }
+
+    /*    ACTION MODE    */
+
+    private ActionMode actionMode = null;
+
+    private void removeSelectedItems() {
+        for (int i = adapter.getSelectedItems().size() - 1; i >= 0; i--) {
+            adapter.removeItem(adapter.getSelectedItems().get(i));
+        }
+        actionMode.finish();
+    }
+
+    private class AdapterListener implements ItemsAdapterListener {
+
+        @Override
+        public void onItemClick(Item item, int position) {
+            if (isOnActionMode()) {
+                toggleSelection(position);
+            }
+        }
+
+        @Override
+        public void onItemLongClick(Item item, int position) {
+            if (isOnActionMode()) {
+                return;
+            }
+            actionMode = ((AppCompatActivity) getActivity()).startSupportActionMode(actionModeCallback);
+
+            toggleSelection(position);
+
+        }
+
+        private void toggleSelection(int position) {
+            adapter.toggleSelection(position);
+        }
+
+        private boolean isOnActionMode() {
+            return actionMode != null;
+        }
+    }
+
+    private ActionMode.Callback actionModeCallback = new ActionMode.Callback() {
+        @Override
+        public boolean onCreateActionMode(ActionMode mode, Menu menu) {
+            MenuInflater menuInflater = new MenuInflater(getContext());
+            menuInflater.inflate(R.menu.items_menu, menu);
+
+            return true;
+        }
+
+        @Override
+        public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
+            return false;
+        }
+
+        @Override
+        public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
+            switch (item.getItemId()) {
+                case R.id.remove:
+                    showDialog();
+                    break;
+            }
+
+            return false;
+        }
+
+        @Override
+        public void onDestroyActionMode(ActionMode mode) {
+            adapter.clearSelection();
+            actionMode = null;
+
+        }
+    };
+
+    private void showDialog() {
+        ConfirmationDialog confirmationDialog = new ConfirmationDialog();
+        confirmationDialog.setListener(new DialogListener() {
+            @Override
+            public void onClickPositiveButton() {
+                removeSelectedItems();
+            }
+
+            @Override
+            public void onClickNegativeButton() {
+
+            }
+        });
+        confirmationDialog.show(getFragmentManager(), "ConfirmationDialog");
+    }
+
 }
